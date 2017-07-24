@@ -27,4 +27,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/find" />
+
+    <Button
+        android:text="保存系统日志"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/save_cat" />
 </LinearLayout>

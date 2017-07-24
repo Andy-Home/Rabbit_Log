@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
+import com.andy.rabbitlog.LogCat;
 import com.andy.rabbitlog.LogManager;
 import com.anni.rabbit_log.R;
 
@@ -17,7 +18,7 @@ import com.anni.rabbit_log.R;
 
 public class TestActivity extends Activity implements View.OnClickListener {
 
-    private Button open, close, save, find;
+    private Button open, close, save, find, saveCat;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,11 +29,13 @@ public class TestActivity extends Activity implements View.OnClickListener {
         close = findViewById(R.id.close);
         save = findViewById(R.id.save);
         find = findViewById(R.id.find);
+        saveCat = findViewById(R.id.save_cat);
 
         open.setOnClickListener(this);
         close.setOnClickListener(this);
         save.setOnClickListener(this);
         find.setOnClickListener(this);
+        saveCat.setOnClickListener(this);
     }
 
     @Override
@@ -53,6 +56,10 @@ public class TestActivity extends Activity implements View.OnClickListener {
             case R.id.find:
                 Intent intent = new Intent(this, MainActivity.class);
                 startActivity(intent);
+                break;
+            case R.id.save_cat:
+                LogManager.setText("保存系统日志");
+                LogManager.saveLogCatInfo(LogCat.DEBUG);
                 break;
         }
     }

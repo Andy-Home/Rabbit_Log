@@ -6,6 +6,7 @@ import android.os.Build;
 import android.view.Gravity;
 import android.view.WindowManager;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,8 +26,10 @@ public class LogManager {
     private WindowManager.LayoutParams params;
     private static LogView view;
     private static LogFile file;
-    public static LogManager mLogManager;
+    private static LogManager mLogManager;
+    private static LogCat mLogCat;
     private Context context;
+    static SimpleDateFormat format;
 
     private LogManager(Context context) {
         this.context = context;
@@ -35,8 +38,7 @@ public class LogManager {
         // 类型
         params.type = WindowManager.LayoutParams.TYPE_TOAST;
         // 设置这样的flag才能使得WindowManager不拦截点击事件
-        int flags = WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
-        params.flags = flags;
+        params.flags = WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
         // 不设置这个弹出框的透明遮罩显示为黑色
         params.alpha = 1.0f;
         params.format = PixelFormat.TRANSLUCENT;
@@ -44,19 +46,23 @@ public class LogManager {
         params.height = WindowManager.LayoutParams.MATCH_PARENT;
         params.gravity = Gravity.CENTER;
         if (view == null) {
-            view = new LogView(context.getApplicationContext());
+            view = new LogView(context);
         }
 
         if (file == null) {
-            file = LogFile.getInstance(context);
+            file = new LogFile(context);
         }
 
+        if (mLogCat == null) {
+            mLogCat = new LogCat(context);
+        }
         contents = new ArrayList<>();
+        format = new SimpleDateFormat("yyyyMMddHHmmss");
     }
 
     public static LogManager getInstance(Context context) {
         if (mLogManager == null) {
-            mLogManager = new LogManager(context);
+            mLogManager = new LogManager(context.getApplicationContext());
         }
         return mLogManager;
     }
@@ -64,7 +70,7 @@ public class LogManager {
     /**
      * 是否显示的标志 用来控制向LogView输入数据
      */
-    static boolean display_flag = false;
+    private static boolean display_flag = false;
 
     public LogManager start() {
         if (!display_flag) {
@@ -109,10 +115,9 @@ public class LogManager {
     /**
      * 设置屏幕上能够显示的信息的行数
      *
-     * @param line
+     * @param line  行数
      */
     public LogManager setLine(int line) {
-        LogView.LINE = line;
         view.setLines(line);
         return mLogManager;
     }
@@ -120,7 +125,7 @@ public class LogManager {
     /**
      * 设置View的背景颜色
      *
-     * @param color
+     * @param color 颜色值
      */
     public LogManager setBackground(int color) {
         view.setBackgroundColor(color);
@@ -130,7 +135,7 @@ public class LogManager {
     /**
      * 设置字体颜色
      *
-     * @param color
+     * @param color 颜色资源值
      */
     public LogManager setTextColor(int color) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -160,6 +165,17 @@ public class LogManager {
             file.save(copy, LogFile.SAVE_EXTERNAL_FILE);
             contents.clear();
         }
+    }
+
+    /**
+     * 保存系统日志
+     *
+     * @param level 保存的日志最低级别
+     *              使用{@link LogCat}中的值,例如{@link LogCat#ASSERT}
+     */
+    public static void saveLogCatInfo(int level) {
+        mLogCat.setLevel(level);
+        mLogCat.start();
     }
 
     /**

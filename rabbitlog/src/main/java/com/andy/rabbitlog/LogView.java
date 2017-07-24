@@ -47,13 +47,13 @@ public class LogView extends TextView {
     private void init() {
         super.setLines(LINE);
         super.setBackgroundResource(R.color.logBackground);
-        super.setGravity(Gravity.RIGHT);
+        super.setGravity(Gravity.END);
     }
 
     /**
      * 打印显示内容
      *
-     * @param msg
+     * @param msg   打印内容
      */
     public void setText(String msg) {
         if (this.msg.size() > 99) {
@@ -68,6 +68,12 @@ public class LogView extends TextView {
         }
 
         super.setText(display);
+    }
+
+    @Override
+    public void setLines(int lines) {
+        super.setLines(lines);
+        LINE = lines;
     }
 
     @Override
