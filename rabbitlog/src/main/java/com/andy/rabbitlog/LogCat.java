@@ -75,7 +75,7 @@ public class LogCat {
         }
         //过滤日志信息,只打印当前应用的信息
         if (!cmd.equals("")) {
-            this.cmd += "| grep \"(" + mPid + ")\"";
+            this.cmd += "| grep " + mPid;
         }
     }
 
@@ -83,42 +83,42 @@ public class LogCat {
      * 打印{@value VERBOSE}以及以上级别的日志命令
      */
     private void v_cmd() {
-        this.cmd = "logcat *:v *:d *:i *:w *:e *:f *:s ";
+        this.cmd = "logcat *:v ";
     }
 
     /**
      * 打印{@value DEBUG}以及以上级别的日志命令
      */
     private void d_cmd() {
-        this.cmd = "logcat *:d *:i *:w *:e *:f *:s ";
+        this.cmd = "logcat *:d ";
     }
 
     /**
      * 打印{@value INFO}以及以上级别的日志命令
      */
     private void i_cmd() {
-        this.cmd = "logcat *:i *:w *:e *:f *:s ";
+        this.cmd = "logcat *:i ";
     }
 
     /**
      * 打印{@value WARN}以及以上级别的日志命令
      */
     private void w_cmd() {
-        this.cmd = "logcat *:w *:e *:f *:s ";
+        this.cmd = "logcat *:w ";
     }
 
     /**
      * 打印{@value ERROR}以及以上级别的日志命令
      */
     private void e_cmd() {
-        this.cmd = "logcat *:e *:f *:s ";
+        this.cmd = "logcat *:e ";
     }
 
     /**
      * 打印{@value ASSERT}级别的日志命令
      */
     private void wtf_cmd() {
-        this.cmd = "logcat *:f *:s ";
+        this.cmd = "logcat *:f ";
     }
 
     void start() {

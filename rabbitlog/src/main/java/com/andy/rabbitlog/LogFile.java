@@ -131,8 +131,8 @@ class LogFile {
         this.CACHE_MAX_VALUE = num;
     }
 
-    List<String> findFileList() {
-        List<String> list = new ArrayList<>();
+    List<File> findFileList() {
+        List<File> list = new ArrayList<>();
         File dir;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             dir = context.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS);
@@ -144,7 +144,7 @@ class LogFile {
             files = dir.listFiles();
         }
         for (File file : files) {
-            list.add(file.getName());
+            list.add(file);
         }
         return list;
     }

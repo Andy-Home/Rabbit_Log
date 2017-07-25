@@ -8,7 +8,6 @@ import android.widget.Button;
 
 import com.andy.rabbitlog.LogCat;
 import com.andy.rabbitlog.LogManager;
-import com.anni.rabbit_log.R;
 
 /**
  * 功能列表界面

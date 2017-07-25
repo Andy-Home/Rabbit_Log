@@ -3,7 +3,6 @@ package com.andy.rabbit_log;
 import android.app.Application;
 
 import com.andy.rabbitlog.LogManager;
-import com.anni.rabbit_log.R;
 
 /**
  * 自定义 Application

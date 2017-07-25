@@ -6,6 +6,7 @@ import android.os.Build;
 import android.view.Gravity;
 import android.view.WindowManager;
 
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -181,7 +182,7 @@ public class LogManager {
     /**
      * 获取存储到外部存储的文件列表
      */
-    public static List<String> findFileList() {
+    public static List<File> findFileList() {
         return file.findFileList();
     }
 }
