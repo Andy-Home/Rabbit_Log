@@ -98,16 +98,17 @@ public class LogManager {
     /**
      * 临时数据
      */
-    private static ArrayList<String> contents;
+    private static ArrayList<Logs.InputLog> contents;
 
     public static void setText(String msg) {
         if (display_flag) {
             view.setText(msg);
         }
-
-        contents.add(msg + "\n");
+        Logs.InputLog inputLog = new Logs.InputLog();
+        inputLog.setMsg(msg);
+        contents.add(inputLog);
         if (contents.size() > MAX_CONTENTS) {
-            ArrayList<String> copy = (ArrayList<String>) contents.clone();
+            ArrayList<Logs.InputLog> copy = (ArrayList<Logs.InputLog>) contents.clone();
             file.save(copy, LogFile.SAVE_CACHE_FILE);
             contents.clear();
         }
@@ -162,7 +163,7 @@ public class LogManager {
      */
     public static void saveLog() {
         if (contents.size() > 0) {
-            ArrayList<String> copy = (ArrayList<String>) contents.clone();
+            ArrayList<Logs.InputLog> copy = (ArrayList<Logs.InputLog>) contents.clone();
             file.save(copy, LogFile.SAVE_EXTERNAL_FILE);
             contents.clear();
         }

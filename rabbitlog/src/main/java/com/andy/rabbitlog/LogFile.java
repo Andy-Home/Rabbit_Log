@@ -5,13 +5,12 @@ import android.os.Build;
 import android.os.Environment;
 import android.util.Log;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -52,7 +51,7 @@ class LogFile {
         if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
             File cacheFile = new File(context.getCacheDir(), CACHE_FILE);
             Log.v("LogFile", "缓存文件大小：" + cacheFile.length());
-            String fileName = PREFIX + format.format(new Date()) + SUFFIX;
+            String fileName = PREFIX + format.format(new Date(System.currentTimeMillis())) + SUFFIX;
             File file;
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
                 file = new File(context.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS), fileName);
@@ -61,15 +60,17 @@ class LogFile {
             }
 
             try {
-                InputStream from = new FileInputStream(cacheFile);
-                OutputStream dest = new FileOutputStream(file);
+                BufferedReader from = new BufferedReader(new FileReader(cacheFile));
+                BufferedWriter dest = new BufferedWriter(new FileWriter(file));
 
-                byte[] b = new byte[1024];
-                int c;
-                while ((c = from.read(b)) > 0) {
-                    dest.write(b, 0, c);
+                dest.write(Logs.SystemLog.getInstance(context).getInfo());
+                String line;
+                while ((line = from.readLine()) != null) {
+                    dest.write(line);
+                    dest.newLine();
                 }
                 from.close();
+                dest.flush();
                 dest.close();
             } catch (IOException e) {
                 e.printStackTrace();
@@ -92,7 +93,7 @@ class LogFile {
      * @param flag 标志位判断,当值为{@value SAVE_CACHE_FILE}时,数据保存到缓存中
      *             当值为{@value SAVE_EXTERNAL_FILE}时,数据保存到存储空间中
      */
-    void save(final ArrayList<String> msg, final int flag) {
+    void save(final ArrayList<Logs.InputLog> msg, final int flag) {
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -106,8 +107,8 @@ class LogFile {
                         fw.close();
                     }
                     FileWriter fw = new FileWriter(cacheFile, true);
-                    for (String content : msg) {
-                        fw.write(content);
+                    for (Logs.InputLog content : msg) {
+                        fw.write(content.getTime() + " " + content.getMsg());
                     }
                     fw.flush();
                     fw.close();

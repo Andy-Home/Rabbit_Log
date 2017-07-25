@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">Rabbit Log</string>
+    <string name="software_version_not_found">Software version not found</string>
+    <string name="unknown_version">Unknown version</string>
+    <string name="phone_name">Phone Name</string>
+    <string name="sdk_version">SDK Version</string>
+    <string name="jdk_version">JDK Version</string>
+    <string name="software_version">Software Version</string>
+    <string name="kernel_version">Kernel Version</string>
+    <string name="file_create_time">File creation time</string>
 </resources>

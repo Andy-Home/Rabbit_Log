@@ -4,11 +4,12 @@ import android.content.Context;
 import android.os.Build;
 import android.os.Environment;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.InputStreamReader;
 import java.util.Date;
 
 import static com.andy.rabbitlog.LogManager.format;
@@ -33,11 +34,11 @@ public class LogCat {
      * Log日志打印命令
      */
     private String cmd;
-    private int mPid;
+    private String packageName;
     private Context context;
 
     LogCat(Context context) {
-        mPid = android.os.Process.myPid();
+        packageName = context.getPackageName();
         v_cmd();
         this.context = context;
     }
@@ -75,7 +76,7 @@ public class LogCat {
         }
         //过滤日志信息,只打印当前应用的信息
         if (!cmd.equals("")) {
-            this.cmd += "| grep " + mPid;
+            this.cmd += "| grep " + packageName;
         }
     }
 
@@ -83,49 +84,49 @@ public class LogCat {
      * 打印{@value VERBOSE}以及以上级别的日志命令
      */
     private void v_cmd() {
-        this.cmd = "logcat *:v ";
+        this.cmd = "logcat -d *:v ";
     }
 
     /**
      * 打印{@value DEBUG}以及以上级别的日志命令
      */
     private void d_cmd() {
-        this.cmd = "logcat *:d ";
+        this.cmd = "logcat -d *:d ";
     }
 
     /**
      * 打印{@value INFO}以及以上级别的日志命令
      */
     private void i_cmd() {
-        this.cmd = "logcat *:i ";
+        this.cmd = "logcat -d *:i ";
     }
 
     /**
      * 打印{@value WARN}以及以上级别的日志命令
      */
     private void w_cmd() {
-        this.cmd = "logcat *:w ";
+        this.cmd = "logcat -d *:w ";
     }
 
     /**
      * 打印{@value ERROR}以及以上级别的日志命令
      */
     private void e_cmd() {
-        this.cmd = "logcat *:e ";
+        this.cmd = "logcat -d *:e ";
     }
 
     /**
      * 打印{@value ASSERT}级别的日志命令
      */
     private void wtf_cmd() {
-        this.cmd = "logcat *:f ";
+        this.cmd = "logcat -d *:f ";
     }
 
     void start() {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                String fileName = PREFIX + format.format(new Date()) + SUFFIX;
+                String fileName = PREFIX + format.format(new Date(System.currentTimeMillis())) + SUFFIX;
                 File file;
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
                     file = new File(context.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS), fileName);
@@ -135,16 +136,19 @@ public class LogCat {
 
                 try {
                     Process process = Runtime.getRuntime().exec(cmd);
-                    InputStream from = process.getInputStream();
-                    OutputStream dest = new FileOutputStream(file);
-
-                    byte[] b = new byte[1024];
-                    int c;
-                    while ((c = from.read(b)) > 0) {
-                        dest.write(b, 0, c);
+                    BufferedReader from = new BufferedReader(new InputStreamReader(process.getInputStream()));
+                    BufferedWriter dest = new BufferedWriter(new FileWriter(file));
+                    System.out.println("日志开始写入");
+                    dest.write(Logs.SystemLog.getInstance(context).getInfo());
+                    String line;
+                    while ((line = from.readLine()) != null) {
+                        dest.write(line);
+                        dest.newLine();
                     }
                     from.close();
+                    dest.flush();
                     dest.close();
+                    System.out.println("日志写入结束");
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

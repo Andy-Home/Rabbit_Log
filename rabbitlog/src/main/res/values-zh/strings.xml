@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Rabbit Log</string>
+    <string name="software_version_not_found">未找到软件版本</string>
+    <string name="unknown_version">未知版本</string>
+    <string name="phone_name">手机名称</string>
+    <string name="sdk_version">SDK版本</string>
+    <string name="jdk_version">JDK版本</string>
+    <string name="software_version">软件版本</string>
+    <string name="device_parameter">设备参数</string>
+    <string name="kernel_version">内核版本</string>
+    <string name="file_create_time">文件创建时间</string>
+</resources>
