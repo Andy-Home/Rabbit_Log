@@ -2,7 +2,6 @@ package com.andy.rabbitlog;
 
 import android.content.Context;
 import android.graphics.PixelFormat;
-import android.os.Build;
 import android.view.Gravity;
 import android.view.WindowManager;
 
@@ -18,22 +17,25 @@ import java.util.List;
  */
 
 public class LogManager {
-    /**
-     * 暂存在内存中的数据的最大量
-     */
-    private static int MAX_CONTENTS = 100;
 
     private WindowManager mWindowManager;
     private WindowManager.LayoutParams params;
     private static LogView view;
-    private static LogFile file;
+    private LogFile file;
     private static LogManager mLogManager;
-    private static LogCat mLogCat;
-    private Context context;
+    private LogCat mLogCat;
+    private CrashHandler mCrashHandler;
     static SimpleDateFormat format;
 
-    private LogManager(Context context) {
-        this.context = context;
+    private LogManager() {
+        contents = new ArrayList<>();
+        format = new SimpleDateFormat("yyyyMMddHHmmss");
+    }
+
+    /**
+     * 初始化
+     */
+    public LogManager init(Context context) {
         mWindowManager = (WindowManager) context.getApplicationContext().getSystemService(Context.WINDOW_SERVICE);
         params = new WindowManager.LayoutParams();
         // 类型
@@ -57,13 +59,17 @@ public class LogManager {
         if (mLogCat == null) {
             mLogCat = new LogCat(context);
         }
-        contents = new ArrayList<>();
-        format = new SimpleDateFormat("yyyyMMddHHmmss");
+
+        if (mCrashHandler == null) {
+            mCrashHandler = new CrashHandler(context);
+        }
+
+        return mLogManager;
     }
 
-    public static LogManager getInstance(Context context) {
+    public static LogManager getInstance() {
         if (mLogManager == null) {
-            mLogManager = new LogManager(context.getApplicationContext());
+            mLogManager = new LogManager();
         }
         return mLogManager;
     }
@@ -71,7 +77,7 @@ public class LogManager {
     /**
      * 是否显示的标志 用来控制向LogView输入数据
      */
-    private static boolean display_flag = false;
+    private boolean display_flag = false;
 
     public LogManager start() {
         if (!display_flag) {
@@ -96,19 +102,26 @@ public class LogManager {
     }
 
     /**
+     * 启用自定义异常处理器
+     */
+    public void enabledCrashHandler() {
+        mCrashHandler.useUncaughtExceptionHandler();
+    }
+
+    /**
      * 临时数据
      */
     private static ArrayList<Logs.InputLog> contents;
 
-    public static void setText(String msg) {
+    public void setText(String msg) {
         if (display_flag) {
             view.setText(msg);
         }
         Logs.InputLog inputLog = new Logs.InputLog();
         inputLog.setMsg(msg);
         contents.add(inputLog);
-        if (contents.size() > MAX_CONTENTS) {
-            ArrayList<Logs.InputLog> copy = (ArrayList<Logs.InputLog>) contents.clone();
+        if (contents.size() > 100) {
+            ArrayList<Logs.InputLog> copy = new ArrayList<>(contents);
             file.save(copy, LogFile.SAVE_CACHE_FILE);
             contents.clear();
         }
@@ -117,34 +130,10 @@ public class LogManager {
     /**
      * 设置屏幕上能够显示的信息的行数
      *
-     * @param line  行数
+     * @param line 行数
      */
     public LogManager setLine(int line) {
         view.setLines(line);
-        return mLogManager;
-    }
-
-    /**
-     * 设置View的背景颜色
-     *
-     * @param color 颜色值
-     */
-    public LogManager setBackground(int color) {
-        view.setBackgroundColor(color);
-        return mLogManager;
-    }
-
-    /**
-     * 设置字体颜色
-     *
-     * @param color 颜色资源值
-     */
-    public LogManager setTextColor(int color) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            view.setTextColor(context.getResources().getColor(color, null));
-        } else {
-            view.setTextColor(context.getResources().getColor(color));
-        }
         return mLogManager;
     }
 
@@ -161,9 +150,9 @@ public class LogManager {
     /**
      * 保存缓存的日志文件到本地
      */
-    public static void saveLog() {
+    public void saveLog() {
         if (contents.size() > 0) {
-            ArrayList<Logs.InputLog> copy = (ArrayList<Logs.InputLog>) contents.clone();
+            ArrayList<Logs.InputLog> copy = new ArrayList<>(contents);
             file.save(copy, LogFile.SAVE_EXTERNAL_FILE);
             contents.clear();
         }
@@ -175,7 +164,7 @@ public class LogManager {
      * @param level 保存的日志最低级别
      *              使用{@link LogCat}中的值,例如{@link LogCat#ASSERT}
      */
-    public static void saveLogCatInfo(int level) {
+    public void saveLogCatInfo(int level) {
         mLogCat.setLevel(level);
         mLogCat.start();
     }
@@ -183,7 +172,7 @@ public class LogManager {
     /**
      * 获取存储到外部存储的文件列表
      */
-    public static List<File> findFileList() {
+    public List<File> findFileList() {
         return file.findFileList();
     }
 }

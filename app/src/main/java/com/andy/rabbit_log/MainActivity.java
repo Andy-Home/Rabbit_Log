@@ -14,7 +14,6 @@ import android.widget.ListView;
 import com.andy.rabbitlog.LogManager;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -22,19 +21,23 @@ public class MainActivity extends Activity {
     private ListView mListView;
     private Handler mHandler = new Handler();
     private List<File> files;
-    private List<String> strings = new ArrayList<>();
+    private LogManager mLogManager;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         mListView = findViewById(R.id.testList);
-        ArrayAdapter arrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1);
-        files = LogManager.findFileList();
+        setView();
+    }
+
+    private void setView() {
+        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1);
+        mLogManager = LogManager.getInstance();
+        files = mLogManager.findFileList();
         for (File file : files) {
-            strings.add(file.getName());
+            arrayAdapter.add(file.getName());
         }
-        arrayAdapter.addAll(strings);
         mListView.setAdapter(arrayAdapter);
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -70,7 +73,7 @@ public class MainActivity extends Activity {
             mHandler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    LogManager.setText(flag + ":打印信息");
+                    mLogManager.setText(flag + ":打印信息");
                     display();
                 }
             }, 300);

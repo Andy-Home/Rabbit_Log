@@ -16,7 +16,7 @@ import com.andy.rabbitlog.LogManager;
  */
 
 public class TestActivity extends Activity implements View.OnClickListener {
-
+    private LogManager mLogManager;
     private Button open, close, save, find, saveCat;
 
     @Override
@@ -29,7 +29,11 @@ public class TestActivity extends Activity implements View.OnClickListener {
         save = findViewById(R.id.save);
         find = findViewById(R.id.find);
         saveCat = findViewById(R.id.save_cat);
+        setListener();
+        mLogManager = LogManager.getInstance();
+    }
 
+    private void setListener() {
         open.setOnClickListener(this);
         close.setOnClickListener(this);
         save.setOnClickListener(this);
@@ -37,28 +41,43 @@ public class TestActivity extends Activity implements View.OnClickListener {
         saveCat.setOnClickListener(this);
     }
 
+    private int flag = 0;
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.open:
-                LogManager.getInstance(this).start();
-                LogManager.setText("开启日志界面显示");
+                mLogManager.start();
+                mLogManager.setText("开启日志界面显示");
                 break;
             case R.id.close:
-                LogManager.setText("关闭日志界面显示");
-                LogManager.getInstance(this).stop();
+                mLogManager.setText("关闭日志界面显示");
+                mLogManager.stop();
                 break;
             case R.id.save:
-                LogManager.setText("保存日志内容");
-                LogManager.saveLog();
+                mLogManager.setText("保存日志内容");
+                mLogManager.saveLog();
                 break;
             case R.id.find:
                 Intent intent = new Intent(this, MainActivity.class);
                 startActivity(intent);
                 break;
             case R.id.save_cat:
-                LogManager.setText("保存系统日志");
-                LogManager.saveLogCatInfo(LogCat.DEBUG);
+                mLogManager.setText("保存系统日志");
+                if (flag == 0) {
+                    mLogManager.saveLogCatInfo(LogCat.VERBOSE);
+                } else if (flag == 1) {
+                    mLogManager.saveLogCatInfo(LogCat.DEBUG);
+                } else if (flag == 2) {
+                    mLogManager.saveLogCatInfo(LogCat.INFO);
+                } else if (flag == 3) {
+                    mLogManager.saveLogCatInfo(LogCat.WARN);
+                } else if (flag == 4) {
+                    mLogManager.saveLogCatInfo(LogCat.ERROR);
+                } else if (flag == 5) {
+                    mLogManager.saveLogCatInfo(LogCat.ASSERT);
+                    flag = 0;
+                }
+                flag++;
                 break;
         }
     }

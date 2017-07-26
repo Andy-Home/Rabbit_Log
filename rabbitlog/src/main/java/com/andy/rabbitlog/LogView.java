@@ -25,27 +25,28 @@ public class LogView extends TextView {
 
     public LogView(Context context) {
         super(context);
-        init();
+        init(context);
     }
 
     public LogView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        init();
+        init(context);
     }
 
     public LogView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        init();
+        init(context);
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public LogView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
-        init();
+        init(context);
     }
 
-    private void init() {
+    private void init(Context context) {
         super.setLines(LINE);
+        super.setTextColor(context.getResources().getColor(R.color.logText));
         super.setBackgroundResource(R.color.logBackground);
         super.setGravity(Gravity.END);
     }

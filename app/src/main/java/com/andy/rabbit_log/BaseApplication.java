@@ -15,15 +15,17 @@ public class BaseApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        LogManager.getInstance(this.getApplicationContext())
+        LogManager.getInstance()
+                .init(getApplicationContext())
                 .setLine(10)
-                .setTextColor(R.color.logText);
+                .setCache(10 * 1024 * 1024)
+                .enabledCrashHandler();
     }
 
     @Override
     public void onTerminate() {
         super.onTerminate();
-        LogManager.getInstance(this.getApplicationContext())
+        LogManager.getInstance()
                 .stop()
                 .finish();
     }

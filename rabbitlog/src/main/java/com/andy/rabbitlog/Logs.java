@@ -1,6 +1,7 @@
 package com.andy.rabbitlog;
 
 import android.content.Context;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Build;
 
@@ -13,22 +14,22 @@ import java.util.Date;
  * Created by andy on 17-7-25.
  */
 
-public class Logs {
+class Logs {
     private static SimpleDateFormat format = new SimpleDateFormat("yyyy.MM.dd HH:mm:ss.SSS");
 
-    public static class InputLog {
+    static class InputLog {
         private String msg;
         private String time;
 
-        public InputLog() {
+        InputLog() {
             time = format.format(new Date(System.currentTimeMillis()));
         }
 
-        public void setMsg(String msg) {
+        void setMsg(String msg) {
             this.msg = msg + "\n";
         }
 
-        public String getMsg() {
+        String getMsg() {
             return msg;
         }
 
@@ -37,37 +38,53 @@ public class Logs {
         }
     }
 
-    public static class SystemLog {
+    static class SystemLog {
         private static SystemLog mSystemLog;
         private String phoneName;       //手机名称
+        private String phoneNameTip;
         private String sdkVersion;      //SDK版本
+        private String sdkVersionTip;
         private String jdkVersion;      //JDK版本
-        private String kernelVersion;   //内核版本
+        private String jdkVersionTip;
         private String softVersion;     //软件版本
-        private Context context;
+        private String softVersionTip;
+        private String softCode;        //软件版本号
+        private String softCodeTip;
+
+        private String createTimeTip;
         private String[] javaVersion = {"1.1", "1.2", "1.3", "1.4", "1.5", "1.6", "1.7", "1.8"};
 
         private SystemLog(Context context) {
-            this.context = context;
-
             phoneName = Build.MODEL;
+            phoneNameTip = context.getString(R.string.phone_name);
+
             sdkVersion = Build.VERSION.RELEASE;
+            sdkVersionTip = context.getString(R.string.sdk_version);
+
             int jdk = Integer.valueOf(System.getProperty("java.class.version").substring(0, 2));
             if ((jdk - 45) > 7) {
                 jdkVersion = context.getResources().getString(R.string.unknown_version);
             } else {
                 jdkVersion = javaVersion[jdk - 45];
             }
-            kernelVersion = System.getProperty("os.version");
+            jdkVersionTip = context.getString(R.string.jdk_version);
+            PackageInfo info;
             try {
-                softVersion = context.getPackageManager().getPackageInfo(context.getPackageName(), 0).versionName;
+                info = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
+                softVersion = info.versionName;
+                softCode = String.valueOf(info.versionCode);
             } catch (PackageManager.NameNotFoundException e) {
                 e.printStackTrace();
                 softVersion = context.getString(R.string.software_version_not_found);
+                softCode = context.getString(R.string.software_code_not_found);
             }
+            softVersionTip = context.getString(R.string.software_version);
+            softCodeTip = context.getString(R.string.software_code);
+
+            createTimeTip = context.getString(R.string.file_create_time);
         }
 
-        public static SystemLog getInstance(Context context) {
+        static SystemLog getInstance(Context context) {
             if (mSystemLog == null) {
                 mSystemLog = new SystemLog(context);
             }
@@ -75,16 +92,17 @@ public class Logs {
         }
 
         public String getInfo() {
-            String info = context.getString(R.string.phone_name) + ":" + phoneName + "\n"
-                    + context.getString(R.string.sdk_version) + ":Android " + sdkVersion + "\n"
-                    + context.getString(R.string.jdk_version) + ":JDK " + jdkVersion + "\n"
-                    + context.getString(R.string.kernel_version) + ":" + kernelVersion + "\n"
-                    + context.getString(R.string.software_version) + ":" + softVersion + "\n"
-                    + context.getString(R.string.file_create_time) + ":" + format.format(new Date(System.currentTimeMillis())) + "\n"
-                    + "=======================================\n"
-                    + "=======================================\n"
-                    + "=======================================\n";
-            return info;
+            return phoneNameTip + ":" + phoneName + "\n"
+                    + sdkVersionTip + ":Android " + sdkVersion + "\n"
+                    + jdkVersionTip + ":JDK " + jdkVersion + "\n"
+                    + softVersionTip + ":" + softVersion + "\n"
+                    + softCodeTip + ":" + softCode + "\n"
+                    + createTimeTip + ":" + format.format(new Date(System.currentTimeMillis())) + "\n"
+                    + "=====*=====**====*=****====*****====****====*****=****====\n"
+                    + "====*=*====*=*===*=*===**==*===**==**==**=====*===*===**==\n"
+                    + "===*****===*==*==*=*=====*=*****==*======*====*===*=====*=\n"
+                    + "==*=====*==*===*=*=*===**==*===*===**==**=====*===*===**==\n"
+                    + "=*=======*=*====**=****====*====*===****====*****=****====\n";
         }
     }
 }

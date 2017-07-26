@@ -12,6 +12,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -144,9 +145,7 @@ class LogFile {
         if (dir != null) {
             files = dir.listFiles();
         }
-        for (File file : files) {
-            list.add(file);
-        }
+        Collections.addAll(list, files);
         return list;
     }
 }

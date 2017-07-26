@@ -138,7 +138,6 @@ public class LogCat {
                     Process process = Runtime.getRuntime().exec(cmd);
                     BufferedReader from = new BufferedReader(new InputStreamReader(process.getInputStream()));
                     BufferedWriter dest = new BufferedWriter(new FileWriter(file));
-                    System.out.println("日志开始写入");
                     dest.write(Logs.SystemLog.getInstance(context).getInfo());
                     String line;
                     while ((line = from.readLine()) != null) {
@@ -148,7 +147,6 @@ public class LogCat {
                     from.close();
                     dest.flush();
                     dest.close();
-                    System.out.println("日志写入结束");
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
