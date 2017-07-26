@@ -17,9 +17,9 @@ public class BaseApplication extends Application {
         super.onCreate();
         LogManager.getInstance()
                 .init(getApplicationContext())
-                .setLine(10)
-                .setCache(10 * 1024 * 1024)
-                .enabledCrashHandler();
+                .setLine(10)                    //设置在屏幕上显示日志的行数
+                .setCache(10 * 1024 * 1024)     //设置缓存的内存
+                .enabledCrashHandler();         //启用自定义异常处理器
     }
 
     @Override
@@ -27,6 +27,6 @@ public class BaseApplication extends Application {
         super.onTerminate();
         LogManager.getInstance()
                 .stop()
-                .finish();
+                .finish();          //释放内存
     }
 }

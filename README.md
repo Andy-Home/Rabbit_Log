@@ -3,6 +3,7 @@
 1. 在Android设备屏幕上全局显示日志内容
 2. 文件保存使用LogManage.setText(String msg)方法显示的日志内容
 3. 文件保存系统日志，能够按照级别保存对应内容
+4. 程序崩溃时保存crash日志，生成文件
 ---
 **使用范例**
 
@@ -13,40 +14,46 @@ public class BaseApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        LogManager.getInstance(this.getApplicationContext())
-                .setLine(10)
-                .setTextColor(R.color.logText);
+        LogManager.getInstance()
+                .init(getApplicationContext())
+                .setLine(10)                    //设置在屏幕上显示日志的行数
+                .setCache(10 * 1024 * 1024)     //设置缓存的内存
+                .enabledCrashHandler();         //启用自定义异常处理器
     }
 
     @Override
     public void onTerminate() {
         super.onTerminate();
-        LogManager.getInstance(this.getApplicationContext())
+        LogManager.getInstance()
                 .stop()
-                .finish();
+                .finish();          //释放内存
     }
 }
 ```
-初始化后，可以通过使用 *LogManager* 提供的静态方法使用相应功能：
+* 获取 *LogManager* 实例
+```Java
+LogManager mLogManager = LogManager.getInstance();
+```
+根据获取的实例引用 *LogManager* 类提供的功能
 * 开启日志内容显示界面
 ```Java
- LogManager.getInstance(this).start();
+ mLogManager.start();
 ```
 * 关闭日志内容显示界面
 ```Java
-LogManager.getInstance(this).stop();
+mLogManager.stop();
 ```
 * 显示对应日志内容
 ```Java
-LogManager.setText("显示日志内容");
+mLogManager.setText("显示日志内容");
 ```
 * 保存日志内容
 ```Java
-LogManager.saveLog();
+mLogManager.saveLog();
 ```
 * 保存系统日志内容
 ```Java
-LogManager.saveLogCatInfo(LogCat.VERBOSE);
+mLogManager.saveLogCatInfo(LogCat.VERBOSE);
 ```
 关于 *LogCat* 显示的日志级别包括：VERBOSE、DEBUG、INFO、WARN、ERROR、ASSERT
 
