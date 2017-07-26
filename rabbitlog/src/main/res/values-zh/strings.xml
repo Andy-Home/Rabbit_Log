@@ -9,7 +9,6 @@
     <string name="jdk_version">JDK版本</string>
     <string name="software_version">软件版本</string>
     <string name="software_code">软件版本号</string>
-    <string name="device_parameter">设备参数</string>
     <string name="kernel_version">内核版本</string>
     <string name="file_create_time">文件创建时间</string>
     <string name="program_crash">程序异常,正在收集日志信息,即将退出程序</string>
