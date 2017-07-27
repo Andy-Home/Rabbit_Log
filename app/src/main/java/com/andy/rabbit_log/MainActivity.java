@@ -50,7 +50,6 @@ public class MainActivity extends Activity {
                 //设置intent的Action属性
                 intent.setAction(Intent.ACTION_VIEW);
                 //设置intent的data和Type属性。
-                //intent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
                 intent.setDataAndType(photoURI, "text/plain");
                 //跳转
                 startActivity(intent);

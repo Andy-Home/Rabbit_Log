@@ -1,4 +1,8 @@
 # Rabbit Log
+[![license](https://img.shields.io/badge/license-Apache%202.0-brightgreen.svg?style=flat)](https://www.apache.org/licenses/LICENSE-2.0) [![Download](https://api.bintray.com/packages/andy-home/maven/Rabbit-Log/images/download.svg) ](https://bintray.com/andy-home/maven/Rabbit-Log/_latestVersion)
+
+
+
 **功能**
 1. 在Android设备屏幕上全局显示日志内容
 2. 文件保存使用LogManage.setText(String msg)方法显示的日志内容
@@ -66,4 +70,5 @@ mLogManager.saveLogCatInfo(LogCat.VERBOSE);
 /Android/data/应用包名/files/Downloads/
 ```
 **提醒**
+
 如果看完该文档后还有问题，可以运行以下程序，了解代码，如果有什么问题，欢迎大家指正
