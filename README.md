@@ -1,13 +1,32 @@
 # Rabbit Log
 [![license](https://img.shields.io/badge/license-Apache%202.0-brightgreen.svg?style=flat)](https://www.apache.org/licenses/LICENSE-2.0) [![Download](https://api.bintray.com/packages/andy-home/maven/Rabbit-Log/images/download.svg) ](https://bintray.com/andy-home/maven/Rabbit-Log/_latestVersion)
 
-
-
 **功能**
 1. 在Android设备屏幕上全局显示日志内容
 2. 文件保存使用LogManage.setText(String msg)方法显示的日志内容
 3. 文件保存系统日志，能够按照级别保存对应内容
 4. 程序崩溃时保存crash日志，生成文件
+---
+* **Maven**
+```xml
+<dependency>
+  <groupId>com.andy.rabbitlog</groupId>
+  <artifactId>rabbitlog</artifactId>
+  <version>1.0</version>
+  <type>pom</type>
+</dependency>
+```
+* **Gradle**
+```
+compile 'com.andy.rabbitlog:rabbitlog:1.0'
+```
+* **lvy**
+```xml
+<dependency org='com.andy.rabbitlog' name='rabbitlog' rev='1.0'>
+  <artifact name='rabbitlog' ext='pom' ></artifact>
+</dependency>
+```
+
 ---
 **使用范例**
 
@@ -61,6 +80,7 @@ mLogManager.saveLogCatInfo(LogCat.VERBOSE);
 ```
 关于 *LogCat* 显示的日志级别包括：VERBOSE、DEBUG、INFO、WARN、ERROR、ASSERT
 
+---
 **注意:** 保存的日志内容的目录路径为:
 ```
 /Android/data/应用包名/files/Document/
