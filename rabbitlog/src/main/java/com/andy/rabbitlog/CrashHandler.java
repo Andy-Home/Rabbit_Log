@@ -25,9 +25,11 @@ class CrashHandler implements Thread.UncaughtExceptionHandler {
      */
     private final static String PREFIX = "log_crash_";
     private final static String SUFFIX = ".txt";
-
+    private Thread.UncaughtExceptionHandler mDefaultCrashHandler;
     CrashHandler(Context context) {
+
         this.context = context;
+        mDefaultCrashHandler = Thread.getDefaultUncaughtExceptionHandler();
     }
 
     /**
@@ -58,9 +60,14 @@ class CrashHandler implements Thread.UncaughtExceptionHandler {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        throwable.printStackTrace();
 
-        //退出程序
-        android.os.Process.killProcess(android.os.Process.myPid());
-        System.exit(1);
+        if (mDefaultCrashHandler != null) {
+            mDefaultCrashHandler.uncaughtException(thread, throwable);
+        } else {
+            //退出程序
+            android.os.Process.killProcess(android.os.Process.myPid());
+            System.exit(1);
+        }
     }
 }
